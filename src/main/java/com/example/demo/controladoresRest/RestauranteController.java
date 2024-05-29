@@ -52,4 +52,12 @@ public class RestauranteController {
         restauranteController.deleteRestaurante(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    
+    @PostMapping("/{id}/foto")
+    public ResponseEntity<String> setRestauranteFoto(@PathVariable("id") int id, @RequestBody String fotoUrl) {
+        String response = restauranteController.setRestauranteFoto(id, fotoUrl);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }

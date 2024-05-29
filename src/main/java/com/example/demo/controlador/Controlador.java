@@ -1,13 +1,13 @@
 package com.example.demo.controlador;
 
 import java.util.List;
+import java.util.OptionalDouble;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.interfase.*;
 import com.example.demo.modelo.*;
-
 
 @RestController
 public class Controlador {
@@ -21,6 +21,37 @@ public class Controlador {
 	@Autowired
     private interfazMenu menuRepository;
 	
+	
+	   public void actualizarPuntuacionPromedio(int idRestaurante) {
+	        Restaurante restaurante = restauranteRepository.findById(idRestaurante).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
+	        List<Resenia> resenias = reseniaRepository.findByRestaurante(restaurante);
+	        OptionalDouble average = resenias.stream().mapToInt(Resenia::getPuntuacion).average();
+
+	        restaurante.setPuntuacionPromedio(average.isPresent() ? (int) average.getAsDouble() : 0);
+	        restaurante.setReseniasTotales(resenias.size());
+	        restauranteRepository.save(restaurante);
+	    }
+	public String setUsuarioFoto(int id, String fotoUrl) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setFoto(fotoUrl);
+        usuarioRepository.save(usuario);
+        return "Foto de usuario actualizada con éxito";
+    }
+
+
+    public String setRestauranteFoto(int id, String fotoUrl) {
+        Restaurante restaurante = restauranteRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
+
+        restaurante.setFoto(fotoUrl);
+        restauranteRepository.save(restaurante);
+        return "Foto del restaurante actualizada con éxito";
+    }
+
+    public String getRestauranteFoto(int id) {
+        Restaurante restaurante = restauranteRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
+        return restaurante.getFoto();
+    }
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
@@ -73,7 +104,14 @@ public class Controlador {
 
         restaurante.setNombreRestaurante(restauranteDetails.getNombreRestaurante());
         restaurante.setDireccion(restauranteDetails.getDireccion());
-        // Agrega los otros campos a actualizar aquí...
+        restaurante.setCiudad(restauranteDetails.getCiudad());
+        restaurante.setProvincia(restauranteDetails.getProvincia());
+        restaurante.setTipoDeCocina(restauranteDetails.getTipoDeCocina());
+        restaurante.setHoraDeApertura(restauranteDetails.getHoraDeApertura());
+        restaurante.setHoraDeCierre(restauranteDetails.getHoraDeCierre());
+        restaurante.setPuntuacionPromedio(restauranteDetails.getPuntuacionPromedio());
+        restaurante.setReseniasTotales(restauranteDetails.getReseniasTotales());
+        restaurante.setFoto(restauranteDetails.getFoto());
 
         return restauranteRepository.save(restaurante);
     }
@@ -94,7 +132,9 @@ public class Controlador {
     }
 
     public Resenia createResenia(Resenia resenia) {
-        return reseniaRepository.save(resenia);
+        Resenia savedResenia = reseniaRepository.save(resenia);
+        actualizarPuntuacionPromedio(resenia.getRestaurante().getIdRestaurante());
+        return savedResenia;
     }
 
     public Resenia updateResenia(int id, Resenia reseniaDetails) {
@@ -106,13 +146,18 @@ public class Controlador {
         resenia.setComentario(reseniaDetails.getComentario());
         resenia.setFecha(reseniaDetails.getFecha());
 
-        return reseniaRepository.save(resenia);
+        Resenia updatedResenia = reseniaRepository.save(resenia);
+        actualizarPuntuacionPromedio(resenia.getRestaurante().getIdRestaurante());
+        return updatedResenia;
     }
 
     public void deleteResenia(int id) {
         Resenia resenia = reseniaRepository.findById(id).orElseThrow(() -> new RuntimeException("Resenia no encontrada"));
+        int idRestaurante = resenia.getRestaurante().getIdRestaurante();
         reseniaRepository.delete(resenia);
+        actualizarPuntuacionPromedio(idRestaurante);
     }
+    
     public List<Menu> getAllMenus() {
         return menuRepository.findAll();
     }

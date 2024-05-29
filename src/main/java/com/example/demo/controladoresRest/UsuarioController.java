@@ -53,4 +53,12 @@ public class UsuarioController {
         usuarioService.deleteUsuario(id);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado exitosamente");
     }
+    
+    @PostMapping("/{id}/foto")
+    public ResponseEntity<String> setUsuarioFoto(@PathVariable("id") int id, @RequestBody String fotoUrl) {
+        String response = usuarioService.setUsuarioFoto(id, fotoUrl);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }

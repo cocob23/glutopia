@@ -39,11 +39,14 @@ public class Restaurante {
 
     @Column(name = "reseñas_totales", nullable = false)
     private int reseniasTotales;
+    
+    @Column(name = "foto")  
+    private String foto;
 
     public Restaurante() {
     	
     }
-    public Restaurante(int idRestaurante, String nombreRestaurante, String direccion, String ciudad, String provincia, String tipoDeCocina, Time horaDeApertura, Time horaDeCierre, int puntuacionPromedio, int reseniasTotales ) {
+    public Restaurante(int idRestaurante, String nombreRestaurante, String direccion, String ciudad, String provincia, String tipoDeCocina, Time horaDeApertura, Time horaDeCierre, int puntuacionPromedio, int reseniasTotales, String foto ) {
     	this.idRestaurante=idRestaurante;
     	this.nombreRestaurante = nombreRestaurante;
     	this.direccion = direccion;
@@ -54,6 +57,7 @@ public class Restaurante {
     	this.horaDeCierre = horaDeCierre;
     	this.puntuacionPromedio = puntuacionPromedio;
     	this.reseniasTotales=reseniasTotales;
+    	this.foto = foto;
     }
     
     // Getters y setters
@@ -137,5 +141,13 @@ public class Restaurante {
     public void setReseniasTotales(int reseniasTotales) {
         this.reseniasTotales = reseniasTotales;
     }
-
+    
+    public void setFoto (String foto) {
+    	this.foto = foto;
+    }
+    
+    public String getFoto() {
+    	return foto;
+    }
+    
 }

@@ -25,17 +25,21 @@ public class Usuario {
 
     @Column(name = "dieta", nullable = false)
     private String dieta;
+   
+    @Column(name = "foto")  
+    private String foto;
     
     public Usuario() {
     	
     }
-    public Usuario(int idUsuario, String nombre, String email, String contraseña, String ubicacion, String dieta ) {
+    public Usuario(int idUsuario, String nombre, String email, String contraseña, String ubicacion, String dieta, String foto ) {
     	this.idUsuario=idUsuario;
     	this.nombre = nombre;
     	this.email = email;
     	this.contraseña = contraseña;
     	this.ubicacion = ubicacion;
     	this.dieta = dieta;
+    	this.foto = foto;
     }
     // Getters y setters
     
@@ -85,6 +89,14 @@ public class Usuario {
 
     public void setDieta(String dieta) {
         this.dieta = dieta;
+    }
+    
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
 }
