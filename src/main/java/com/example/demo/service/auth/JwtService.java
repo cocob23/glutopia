@@ -14,6 +14,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.modelo.Usuario;
+
 @Service
 public class JwtService {
 

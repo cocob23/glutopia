@@ -1,8 +1,11 @@
 package com.example.demo.controladoresRest;
 
-import com.example.demo.modelo.AuthenticationRequest;
+import com.example.demo.modelo.auth.AuthResponse;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.CustomUserDetailsService;
+import com.example.demo.service.auth.JwtService;
+import com.example.demo.service.auth.AuthService;
+import com.example.demo.modelo.auth.LoginRequest;
+import com.example.demo.modelo.auth.RegisterRequest;
 
 
 import lombok.RequiredArgsConstructor;
@@ -17,12 +20,14 @@ import lombok.RequiredArgsConstructor;
 
 
 
+
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     
-    private final Controlador authService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {

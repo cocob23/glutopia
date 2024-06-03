@@ -30,16 +30,19 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder; // Añadir PasswordEncoder
 
-    public AuthService (interfazUsuario userRepository, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder ) {
-    	this.userRepository = userRepository;
-    	this.jwtService = jwtService;
-    	this.authenticationManager = authenticationManager;
-    	this.passwordEncoder = passwordEncoder;
-    }
+//    public AuthService (interfazUsuario userRepository, JwtService jwtService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder ) {
+ //   	this.userRepository = userRepository;
+  //  	this.jwtService = jwtService;
+   // 	this.authenticationManager = authenticationManager;
+   // 	this.passwordEncoder = passwordEncoder;
+    //}
     
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContraseña()));
-        Usuario user = userRepository.findByEmail(request.getEmail());
+    	System.out.println("hola");
+    	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContraseña()));      
+    	System.out.println("hola2");
+    	Usuario user = userRepository.findByEmail(request.getEmail());
+        System.out.println(user);
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getContraseña(),
@@ -50,7 +53,7 @@ public class AuthService {
             String token = jwtService.getToken(userDetails);
             return AuthResponse.builder()
             .token(token)
-            .userId(user.getIdUsuario())
+            .userId(Long.valueOf(user.getIdUsuario()))
             .build();
     }
 
@@ -63,10 +66,19 @@ public class AuthService {
         user.setDieta(request.getDieta());
         user.setFoto(request.getFoto());
         userRepository.save(user);
-        String token = jwtService.getToken(user);
-        return AuthResponse.builder()
-            .token(token)
-            .userId(user.getIdUsuario())
-            .build();
+        
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getContraseña(), // Aquí puede haber un problema, explicado después
+                Collections.emptyList()
+            );
+            
+            // Obtener el token utilizando el UserDetails creado
+            String token = jwtService.getToken(userDetails);
+            
+            return AuthResponse.builder()
+                .token(token)
+                .userId(Long.valueOf(user.getIdUsuario()))
+                .build();
     }
 }
